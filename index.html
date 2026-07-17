@@ -295,6 +295,27 @@
             color: white;
             border-color: var(--primary);
         }
+        .sugar-tag {
+            transition: all 0.2s;
+        }
+        .sugar-tag.active {
+            background: var(--danger);
+            color: white;
+            border-color: var(--danger);
+        }
+        .check-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 4px;
+            padding: 2px 8px;
+            border-radius: 12px;
+            font-size: 11px;
+            font-weight: 600;
+        }
+        .badge-success { background: #d4edda; color: #155724; }
+        .badge-danger { background: #f8d7da; color: #721c24; }
+        .badge-warning { background: #fff3cd; color: #856404; }
+        .badge-info { background: #d1ecf1; color: #0c5460; }
         .bottom-nav {
             position: fixed;
             bottom: 0;
@@ -503,7 +524,55 @@
                 </div>
             </div>
 
+            
             <div class="card">
+                <div class="card-title">
+                    <i class="fas fa-table-tennis" style="color:var(--warning);"></i>
+                    Log Tennis Session
+                </div>
+                <div id="tennis-form">
+                    <div style="display:flex; gap:8px; margin-bottom:12px;">
+                        <div style="flex:1;">
+                            <label style="font-size:11px; color:var(--text-muted); font-weight:600; display:block; margin-bottom:4px;">Date</label>
+                            <input type="date" id="tennis-date" value="2026-07-17" style="width:100%; padding:8px; border:1px solid var(--border); border-radius:8px; font-size:14px;">
+                        </div>
+                        <div style="flex:1;">
+                            <label style="font-size:11px; color:var(--text-muted); font-weight:600; display:block; margin-bottom:4px;">Duration (min)</label>
+                            <input type="number" id="tennis-duration" placeholder="90" min="15" max="300" style="width:100%; padding:8px; border:1px solid var(--border); border-radius:8px; font-size:14px;">
+                        </div>
+                    </div>
+                    <div style="margin-bottom:12px;">
+                        <label style="font-size:11px; color:var(--text-muted); font-weight:600; display:block; margin-bottom:4px;">Intensity</label>
+                        <div style="display:flex; gap:8px;">
+                            <button class="btn btn-outline btn-sm tennis-intensity" data-val="light" style="flex:1;" onclick="selectTennisIntensity('light')">Light</button>
+                            <button class="btn btn-outline btn-sm tennis-intensity" data-val="moderate" style="flex:1;" onclick="selectTennisIntensity('moderate')">Moderate</button>
+                            <button class="btn btn-outline btn-sm tennis-intensity" data-val="intense" style="flex:1;" onclick="selectTennisIntensity('intense')">Intense</button>
+                        </div>
+                    </div>
+                    <div style="margin-bottom:12px;">
+                        <label style="font-size:11px; color:var(--text-muted); font-weight:600; display:block; margin-bottom:4px;">Notes (optional)</label>
+                        <input type="text" id="tennis-notes" placeholder="Singles, doubles, drills..." style="width:100%; padding:8px; border:1px solid var(--border); border-radius:8px; font-size:14px;">
+                    </div>
+                    <button class="btn btn-primary" style="width:100%;" onclick="logTennisSession()">
+                        <i class="fas fa-save"></i> Log Tennis Session
+                    </button>
+                </div>
+            </div>
+
+            <div class="card">
+                <div class="card-title">
+                    <i class="fas fa-history" style="color:var(--warning);"></i>
+                    Tennis History
+                </div>
+                <div id="tennis-history">
+                    <div class="empty-state">
+                        <i class="fas fa-table-tennis"></i>
+                        <p>No tennis sessions logged yet</p>
+                    </div>
+                </div>
+            </div>
+
+<div class="card">
                 <div class="card-title">
                     <i class="fas fa-history" style="color:var(--primary);"></i>
                     Recent Sessions
@@ -517,7 +586,136 @@
             </div>
         </div>
 
-        <!-- Schedule Tab -->
+                <!-- Daily Checklist Tab -->
+        <div id="daily-section" class="section fade-in">
+            <div class="card">
+                <div class="card-title">
+                    <i class="fas fa-calendar-day" style="color:var(--primary);"></i>
+                    Daily Checklist
+                </div>
+                <div style="margin-bottom:12px;">
+                    <input type="date" id="daily-date" value="2026-07-17" style="width:100%; padding:10px; border:1px solid var(--border); border-radius:10px; font-size:14px; margin-bottom:12px;">
+                </div>
+
+                <!-- Exercise Check -->
+                <div style="margin-bottom:16px; padding:12px; background:var(--bg); border-radius:12px;">
+                    <div style="display:flex; align-items:center; gap:12px; margin-bottom:8px;">
+                        <div class="custom-checkbox" id="exercise-check" onclick="toggleDailyCheck('exercise')" style="width:24px; height:24px;">
+                            <i class="fas fa-check" style="font-size:14px; display:none;"></i>
+                        </div>
+                        <div style="flex:1;">
+                            <div style="font-weight:700; font-size:15px;">Exercise</div>
+                            <div style="font-size:12px; color:var(--text-muted);">Tennis, gym, swimming, etc.</div>
+                        </div>
+                    </div>
+                    <div id="exercise-details" style="display:none; margin-left:36px; margin-top:8px;">
+                        <select id="exercise-type" style="width:100%; padding:8px; border:1px solid var(--border); border-radius:8px; font-size:14px; margin-bottom:8px;">
+                            <option value="">Select type...</option>
+                            <option value="tennis">Tennis</option>
+                            <option value="gym">Weight Training</option>
+                            <option value="swimming">Swimming</option>
+                            <option value="running">Running</option>
+                            <option value="cycling">Cycling</option>
+                            <option value="other">Other</option>
+                        </select>
+                        <input type="number" id="exercise-duration" placeholder="Duration (minutes)" min="5" max="300" style="width:100%; padding:8px; border:1px solid var(--border); border-radius:8px; font-size:14px; margin-bottom:8px;">
+                        <input type="text" id="exercise-notes" placeholder="Notes (optional)" style="width:100%; padding:8px; border:1px solid var(--border); border-radius:8px; font-size:14px;">
+                    </div>
+                </div>
+
+                <!-- Walking Check -->
+                <div style="margin-bottom:16px; padding:12px; background:var(--bg); border-radius:12px;">
+                    <div style="display:flex; align-items:center; gap:12px; margin-bottom:8px;">
+                        <div class="custom-checkbox" id="walking-check" onclick="toggleDailyCheck('walking')" style="width:24px; height:24px;">
+                            <i class="fas fa-check" style="font-size:14px; display:none;"></i>
+                        </div>
+                        <div style="flex:1;">
+                            <div style="font-weight:700; font-size:15px;">Walking</div>
+                            <div style="font-size:12px; color:var(--text-muted);">10,000+ steps target</div>
+                        </div>
+                    </div>
+                    <div id="walking-details" style="display:none; margin-left:36px; margin-top:8px;">
+                        <input type="number" id="walking-steps" placeholder="Steps today" min="0" max="50000" style="width:100%; padding:8px; border:1px solid var(--border); border-radius:8px; font-size:14px;">
+                        <div style="margin-top:6px; font-size:12px; color:var(--text-muted);">
+                            <span id="walking-status">0 / 10,000 steps</span>
+                        </div>
+                        <div style="width:100%; height:6px; background:var(--border); border-radius:3px; margin-top:6px; overflow:hidden;">
+                            <div id="walking-bar" style="width:0%; height:100%; background:var(--primary); border-radius:3px; transition:width 0.3s;"></div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- No Sugar Check -->
+                <div style="margin-bottom:16px; padding:12px; background:var(--bg); border-radius:12px;">
+                    <div style="display:flex; align-items:center; gap:12px; margin-bottom:8px;">
+                        <div class="custom-checkbox" id="sugar-check" onclick="toggleDailyCheck('sugar')" style="width:24px; height:24px;">
+                            <i class="fas fa-check" style="font-size:14px; display:none;"></i>
+                        </div>
+                        <div style="flex:1;">
+                            <div style="font-weight:700; font-size:15px;">No Sugar Day</div>
+                            <div style="font-size:12px; color:var(--text-muted);">Zero added sugar</div>
+                        </div>
+                    </div>
+                    <div id="sugar-details" style="display:none; margin-left:36px; margin-top:8px;">
+                        <div style="font-size:13px; color:var(--text-muted); margin-bottom:8px;">What sugar did you have?</div>
+                        <div style="display:flex; flex-wrap:wrap; gap:6px; margin-bottom:8px;">
+                            <button class="btn btn-outline btn-sm sugar-tag" onclick="toggleSugarTag(this, 'dessert')">Dessert</button>
+                            <button class="btn btn-outline btn-sm sugar-tag" onclick="toggleSugarTag(this, 'candy')">Candy</button>
+                            <button class="btn btn-outline btn-sm sugar-tag" onclick="toggleSugarTag(this, 'soda')">Soda</button>
+                            <button class="btn btn-outline btn-sm sugar-tag" onclick="toggleSugarTag(this, 'pastry')">Pastry</button>
+                            <button class="btn btn-outline btn-sm sugar-tag" onclick="toggleSugarTag(this, 'chocolate')">Chocolate</button>
+                            <button class="btn btn-outline btn-sm sugar-tag" onclick="toggleSugarTag(this, 'other')">Other</button>
+                        </div>
+                        <input type="number" id="sugar-count" placeholder="How many times today?" min="1" max="20" style="width:100%; padding:8px; border:1px solid var(--border); border-radius:8px; font-size:14px; margin-bottom:8px;">
+                        <input type="text" id="sugar-notes" placeholder="Details (e.g., 'ice cream after dinner')" style="width:100%; padding:8px; border:1px solid var(--border); border-radius:8px; font-size:14px;">
+                    </div>
+                </div>
+
+                <button class="btn btn-primary" style="width:100%;" onclick="saveDailyChecklist()">
+                    <i class="fas fa-save"></i> Save Daily Checklist
+                </button>
+            </div>
+
+            <div class="card">
+                <div class="card-title">
+                    <i class="fas fa-history" style="color:var(--primary);"></i>
+                    Daily History
+                </div>
+                <div id="daily-history">
+                    <div class="empty-state">
+                        <i class="fas fa-calendar-check"></i>
+                        <p>No daily checklists logged yet</p>
+                    </div>
+                </div>
+            </div>
+
+            <div class="card">
+                <div class="card-title">
+                    <i class="fas fa-fire" style="color:var(--primary);"></i>
+                    Streaks
+                </div>
+                <div class="progress-card">
+                    <div class="stat-box">
+                        <div class="stat-value" id="streak-exercise">0</div>
+                        <div class="stat-label">Exercise streak</div>
+                    </div>
+                    <div class="stat-box">
+                        <div class="stat-value" id="streak-walking">0</div>
+                        <div class="stat-label">Walking streak</div>
+                    </div>
+                    <div class="stat-box">
+                        <div class="stat-value" id="streak-sugar">0</div>
+                        <div class="stat-label">No-sugar streak</div>
+                    </div>
+                    <div class="stat-box">
+                        <div class="stat-value" id="streak-perfect">0</div>
+                        <div class="stat-label">Perfect days</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+<!-- Schedule Tab -->
         <div id="schedule-section" class="section fade-in">
             <div class="card" style="background: var(--accent); border: none;">
                 <div style="font-size:13px; color:var(--primary); font-weight:600;">
@@ -695,6 +893,8 @@
         const STORAGE_KEY = 'tennis_gym_tracker_data';
 
         let data = {
+            dailyLog: [],
+            tennisLog: [],
             weightLog: [
                 { date: '2026-07-10', weight: 91.5 },
                 { date: '2026-07-13', weight: 91.2 },
@@ -1042,17 +1242,18 @@
                 <div style="display:flex; justify-content:space-between; align-items:center;">
                     <div>
                         <h1 style="font-size:22px; font-weight:800;">Tennis Gym Tracker</h1>
-                        <p style="font-size:13px; opacity:0.9; margin-top:4px;">33y &bull; ${data.weightLog[data.weightLog.length-1]?.weight || 91}kg &bull; 178cm</p>
+                        <p style="font-size:13px; opacity:0.9; margin-top:4px;">33y &bull; ${data.weightLog[data.weightLog.length-1]?.weight || 90.5}kg &bull; 178cm</p>
                     </div>
                     <div style="text-align:right;">
-                        <div style="font-size:28px; font-weight:800;">${data.weightLog[data.weightLog.length-1]?.weight || 91}</div>
+                        <div style="font-size:28px; font-weight:800;">${data.weightLog[data.weightLog.length-1]?.weight || 90.5}</div>
                         <div style="font-size:12px; opacity:0.8;">kg current</div>
+                        <div style="font-size:11px; opacity:0.7; margin-top:2px;">Goal: 84 kg</div>
                     </div>
                 </div>
                 <div style="display:flex; gap:8px; margin-top:16px;">
                     <div style="background:rgba(255,255,255,0.15); border-radius:12px; padding:8px 12px; flex:1; text-align:center;">
-                        <div style="font-size:18px; font-weight:700;">${data.sessions.length}</div>
-                        <div style="font-size:11px; opacity:0.8;">Gym sessions</div>
+                        <div style="font-size:18px; font-weight:700;">${((data.weightLog[data.weightLog.length-1]?.weight || 90.5) - 84).toFixed(1)}</div>
+                        <div style="font-size:11px; opacity:0.8;">kg to goal</div>
                     </div>
                     <div style="background:rgba(255,255,255,0.15); border-radius:12px; padding:8px 12px; flex:1; text-align:center;">
                         <div style="font-size:18px; font-weight:700;">2-3</div>
@@ -1251,12 +1452,300 @@
             });
         }
 
+
+        // Tennis Tracking
+        let selectedTennisIntensity = null;
+
+        function selectTennisIntensity(intensity) {
+            selectedTennisIntensity = intensity;
+            document.querySelectorAll('.tennis-intensity').forEach(btn => {
+                btn.style.background = btn.dataset.val === intensity ? 'var(--warning)' : 'transparent';
+                btn.style.color = btn.dataset.val === intensity ? '#856404' : 'var(--text)';
+                btn.style.borderColor = btn.dataset.val === intensity ? 'var(--warning)' : 'var(--border)';
+            });
+        }
+
+        function logTennisSession() {
+            const dateInput = document.getElementById('tennis-date');
+            const durationInput = document.getElementById('tennis-duration');
+            const notesInput = document.getElementById('tennis-notes');
+
+            const date = dateInput.value || new Date().toISOString().split('T')[0];
+            const duration = parseInt(durationInput.value);
+
+            if (!duration || duration < 15) {
+                showToast('Please enter a valid duration (min 15 min)');
+                return;
+            }
+            if (!selectedTennisIntensity) {
+                showToast('Please select intensity level');
+                return;
+            }
+
+            if (!data.tennisLog) data.tennisLog = [];
+
+            data.tennisLog.push({
+                date: date,
+                duration: duration,
+                intensity: selectedTennisIntensity,
+                notes: notesInput.value || ''
+            });
+
+            // Reset form
+            dateInput.value = '';
+            durationInput.value = '';
+            notesInput.value = '';
+            selectedTennisIntensity = null;
+            document.querySelectorAll('.tennis-intensity').forEach(btn => {
+                btn.style.background = 'transparent';
+                btn.style.color = 'var(--text)';
+                btn.style.borderColor = 'var(--border)';
+            });
+
+            saveData();
+            updateTennisDisplay();
+            showToast('Tennis session logged!');
+        }
+
+        function updateTennisDisplay() {
+            const history = document.getElementById('tennis-history');
+
+            if (!data.tennisLog || data.tennisLog.length === 0) {
+                history.innerHTML = `
+                    <div class="empty-state">
+                        <i class="fas fa-table-tennis"></i>
+                        <p>No tennis sessions logged yet</p>
+                    </div>
+                `;
+                return;
+            }
+
+            const sorted = [...data.tennisLog].sort((a, b) => new Date(b.date) - new Date(a.date));
+
+            const intensityColors = {
+                light: '#6c757d',
+                moderate: '#ffc107',
+                intense: '#dc3545'
+            };
+
+            const intensityLabels = {
+                light: 'Light',
+                moderate: 'Moderate',
+                intense: 'Intense'
+            };
+
+            history.innerHTML = sorted.slice(0, 10).map(entry => `
+                <div style="padding:10px 0; border-bottom:1px solid var(--border);">
+                    <div style="display:flex; justify-content:space-between; align-items:center;">
+                        <div>
+                            <div style="font-weight:700;">${entry.date}</div>
+                            <div style="font-size:12px; color:var(--text-muted);">${entry.notes || 'Tennis session'}</div>
+                        </div>
+                        <div style="text-align:right;">
+                            <div style="font-weight:700;">${entry.duration} min</div>
+                            <span style="font-size:11px; padding:2px 8px; border-radius:12px; background:${intensityColors[entry.intensity]}20; color:${intensityColors[entry.intensity]}; font-weight:600;">${intensityLabels[entry.intensity]}</span>
+                        </div>
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        // Daily Checklist Functions
+        let dailyChecks = { exercise: false, walking: false, sugar: false };
+        let selectedSugarTags = [];
+
+        function toggleDailyCheck(type) {
+            dailyChecks[type] = !dailyChecks[type];
+            const checkbox = document.getElementById(type + '-check');
+            const details = document.getElementById(type + '-details');
+            const checkIcon = checkbox.querySelector('i');
+
+            if (dailyChecks[type]) {
+                checkbox.classList.add('checked');
+                checkIcon.style.display = 'block';
+                details.style.display = 'block';
+            } else {
+                checkbox.classList.remove('checked');
+                checkIcon.style.display = 'none';
+                details.style.display = 'none';
+            }
+
+            if (type === 'walking') {
+                const stepsInput = document.getElementById('walking-steps');
+                if (stepsInput) {
+                    stepsInput.oninput = updateWalkingProgress;
+                }
+            }
+        }
+
+        function updateWalkingProgress() {
+            const steps = parseInt(document.getElementById('walking-steps').value) || 0;
+            const pct = Math.min(100, (steps / 10000) * 100);
+            document.getElementById('walking-bar').style.width = pct + '%';
+            document.getElementById('walking-status').textContent = steps.toLocaleString() + ' / 10,000 steps';
+
+            if (steps >= 10000) {
+                document.getElementById('walking-bar').style.background = 'var(--success)';
+            } else {
+                document.getElementById('walking-bar').style.background = 'var(--primary)';
+            }
+        }
+
+        function toggleSugarTag(btn, tag) {
+            btn.classList.toggle('active');
+            if (selectedSugarTags.includes(tag)) {
+                selectedSugarTags = selectedSugarTags.filter(t => t !== tag);
+            } else {
+                selectedSugarTags.push(tag);
+            }
+        }
+
+        function saveDailyChecklist() {
+            const date = document.getElementById('daily-date').value || new Date().toISOString().split('T')[0];
+
+            if (!data.dailyLog) data.dailyLog = [];
+
+            data.dailyLog = data.dailyLog.filter(entry => entry.date !== date);
+
+            const entry = {
+                date: date,
+                exercise: dailyChecks.exercise ? {
+                    type: document.getElementById('exercise-type').value,
+                    duration: parseInt(document.getElementById('exercise-duration').value) || 0,
+                    notes: document.getElementById('exercise-notes').value
+                } : null,
+                walking: dailyChecks.walking ? {
+                    steps: parseInt(document.getElementById('walking-steps').value) || 0,
+                    targetMet: (parseInt(document.getElementById('walking-steps').value) || 0) >= 10000
+                } : null,
+                sugar: dailyChecks.sugar ? {
+                    hadSugar: selectedSugarTags.length > 0,
+                    tags: selectedSugarTags,
+                    count: parseInt(document.getElementById('sugar-count').value) || 0,
+                    notes: document.getElementById('sugar-notes').value
+                } : { hadSugar: false, tags: [], count: 0, notes: '' }
+            };
+
+            data.dailyLog.push(entry);
+            saveData();
+
+            resetDailyForm();
+            updateDailyDisplay();
+            updateStreaks();
+            showToast('Daily checklist saved!');
+        }
+
+        function resetDailyForm() {
+            dailyChecks = { exercise: false, walking: false, sugar: false };
+            selectedSugarTags = [];
+
+            ['exercise', 'walking', 'sugar'].forEach(type => {
+                const checkbox = document.getElementById(type + '-check');
+                const details = document.getElementById(type + '-details');
+                const checkIcon = checkbox ? checkbox.querySelector('i') : null;
+                if (checkbox) checkbox.classList.remove('checked');
+                if (checkIcon) checkIcon.style.display = 'none';
+                if (details) details.style.display = 'none';
+            });
+
+            document.getElementById('exercise-type').value = '';
+            document.getElementById('exercise-duration').value = '';
+            document.getElementById('exercise-notes').value = '';
+            document.getElementById('walking-steps').value = '';
+            document.getElementById('walking-bar').style.width = '0%';
+            document.getElementById('walking-status').textContent = '0 / 10,000 steps';
+            document.getElementById('sugar-count').value = '';
+            document.getElementById('sugar-notes').value = '';
+            document.querySelectorAll('.sugar-tag').forEach(btn => btn.classList.remove('active'));
+        }
+
+        function updateDailyDisplay() {
+            const history = document.getElementById('daily-history');
+
+            if (!data.dailyLog || data.dailyLog.length === 0) {
+                history.innerHTML = `
+                    <div class="empty-state">
+                        <i class="fas fa-calendar-check"></i>
+                        <p>No daily checklists logged yet</p>
+                    </div>
+                `;
+                return;
+            }
+
+            const sorted = [...data.dailyLog].sort((a, b) => new Date(b.date) - new Date(a.date));
+
+            history.innerHTML = sorted.slice(0, 14).map(entry => {
+                const exerciseIcon = entry.exercise ? '<span class="check-badge badge-success"><i class="fas fa-check"></i> Exercise</span>' : '';
+                const walkingIcon = entry.walking ? '<span class="check-badge ' + (entry.walking.targetMet ? 'badge-success' : 'badge-warning') + '"><i class="fas fa-walking"></i> ' + entry.walking.steps.toLocaleString() + ' steps</span>' : '';
+                const sugarIcon = entry.sugar && entry.sugar.hadSugar 
+                    ? '<span class="check-badge badge-danger"><i class="fas fa-cookie-bite"></i> Sugar: ' + entry.sugar.count + 'x</span>'
+                    : '<span class="check-badge badge-success"><i class="fas fa-check"></i> No sugar</span>';
+
+                return `
+                    <div style="padding:12px 0; border-bottom:1px solid var(--border);">
+                        <div style="font-weight:700; margin-bottom:6px;">${entry.date}</div>
+                        <div style="display:flex; flex-wrap:wrap; gap:6px;">
+                            ${exerciseIcon}
+                            ${walkingIcon}
+                            ${sugarIcon}
+                        </div>
+                    </div>
+                `;
+            }).join('');
+        }
+
+        function updateStreaks() {
+            if (!data.dailyLog) return;
+
+            const sorted = [...data.dailyLog].sort((a, b) => new Date(a.date) - new Date(b.date));
+
+            let exerciseStreak = 0, walkingStreak = 0, sugarStreak = 0, perfectStreak = 0;
+            let currentEx = 0, currentWalk = 0, currentSugar = 0, currentPerfect = 0;
+
+            sorted.forEach(entry => {
+                if (entry.exercise) { currentEx++; exerciseStreak = Math.max(exerciseStreak, currentEx); }
+                else { currentEx = 0; }
+
+                if (entry.walking && entry.walking.targetMet) { currentWalk++; walkingStreak = Math.max(walkingStreak, currentWalk); }
+                else { currentWalk = 0; }
+
+                if (!entry.sugar || !entry.sugar.hadSugar) { currentSugar++; sugarStreak = Math.max(sugarStreak, currentSugar); }
+                else { currentSugar = 0; }
+
+                if (entry.exercise && entry.walking && entry.walking.targetMet && (!entry.sugar || !entry.sugar.hadSugar)) { 
+                    currentPerfect++; perfectStreak = Math.max(perfectStreak, currentPerfect); 
+                }
+                else { currentPerfect = 0; }
+            });
+
+            document.getElementById('streak-exercise').textContent = exerciseStreak;
+            document.getElementById('streak-walking').textContent = walkingStreak;
+            document.getElementById('streak-sugar').textContent = sugarStreak;
+            document.getElementById('streak-perfect').textContent = perfectStreak;
+        }
+
+        // Update init to include tennis
+        const originalInit = () => {
+            loadData();
+            renderSchedule();
+            updateWorkoutDisplay();
+            updateWeightDisplay();
+            updateProgressCharts();
+            updateTennisDisplay();
+        };
+
+        // Override the initialization
+        // We need to replace the existing init calls at the bottom of the script
+
         // Initialize
         loadData();
         renderSchedule();
         updateWorkoutDisplay();
         updateWeightDisplay();
         updateProgressCharts();
+        updateTennisDisplay();
+        updateDailyDisplay();
+        updateStreaks();
     </script>
 </body>
 </html>
