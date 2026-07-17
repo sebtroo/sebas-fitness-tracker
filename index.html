@@ -497,6 +497,9 @@
             <button class="nav-tab active" onclick="showTab('workout')">
                 <i class="fas fa-dumbbell"></i> Workout
             </button>
+            <button class="nav-tab" onclick="showTab('daily')">
+                <i class="fas fa-check-circle"></i> Daily
+            </button>
             <button class="nav-tab" onclick="showTab('schedule')">
                 <i class="fas fa-calendar"></i> Schedule
             </button>
@@ -840,6 +843,10 @@
                 <i class="fas fa-dumbbell"></i>
                 <span>Workout</span>
             </button>
+            <button class="bottom-nav-item" onclick="showTab('daily')">
+                <i class="fas fa-check-circle"></i>
+                <span>Daily</span>
+            </button>
             <button class="bottom-nav-item" onclick="showTab('schedule')">
                 <i class="fas fa-calendar-week"></i>
                 <span>Schedule</span>
@@ -984,7 +991,7 @@
 
             document.getElementById(tabName + '-section').classList.add('active');
 
-            const tabIndex = ['workout', 'schedule', 'progress', 'weight'].indexOf(tabName);
+            const tabIndex = ['workout', 'daily', 'schedule', 'progress', 'weight'].indexOf(tabName);
             document.querySelectorAll('.nav-tab')[tabIndex].classList.add('active');
             document.querySelectorAll('.bottom-nav-item')[tabIndex].classList.add('active');
 
